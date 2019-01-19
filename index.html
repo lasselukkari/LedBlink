@@ -15,6 +15,10 @@
       }
     }
 
+    .card {
+      margin-bottom: 1rem;
+    }
+
     .d2h-wrapper {
       text-align: left
     }
@@ -269,29 +273,31 @@
       background: 0 0
     }
   </style>
-  <title>Arduino SPA Tutorial</title>
+  <title>Arduino Full Stack</title>
 </head>
 <body>
 
 <div class="container">
-  <h1>Arduino SPA Tutorial</h1>
-  <p class="lead">- Deploying a single page app on the ESP32</p>
+  <h1>Arduino Full Stack</h1>
+  <p class="lead">- Deploying a React app on the ESP32</p>
   <p>
     <img src="images/loop.gif" class="rounded mx-auto d-block img-thumbnail"/>
   </p>
   <p>
-    I this tutorial we are going to build a Javascript single page app to blink a led. This is an Arduino tutorial after all.
+    I this tutorial we are going to build a JavaScript single page app to blink a led. This is an Arduino tutorial after
+    all.
   </p>
   <p>
     The idea is that whole application will be completely hosted on a ESP32 microcontroller. This includes the static
-    files for the user interface. Of course in real life blinking a led definitely does not require a full
-    blown front-end framework. How ever the same workflow can be applied to a lot more complex uses cases like <a
-      href="https://github.com/lasselukkari/DuinoDCX">this</a>.
+    files for the user interface. This way the end user does not need to install any special applications. A device with
+    a wifi connection and a browser is all that is needed.
   </p>
   <p>
-    The tutorial is mostly about the toolchain rather than about programming. In total there is less than 50 lines of
-    code changes and only few small
-    functions that we need implement.
+    Of course in real life blinking a led definitely does not require a full blown front-end framework. How ever the
+    same workflow can be applied to a lot more complex uses cases like <a
+      href="https://github.com/lasselukkari/DuinoDCX">this</a>. Also the tutorial is more about the toolchain than it is
+    about Arduino or React programming. In total there is less than 50 lines of code changes and only few
+    small functions that we need implement.
   </p>
   <p>
     The ready project is hosted at <a href="https://github.com/lasselukkari/led-blink/">Github</a>. If you want to
@@ -301,8 +307,29 @@
       href="https://github.com/lasselukkari/led-blink/commits/master"><i
       class="fab fa-github"></i></a>
   </p>
-  <h3>
-    Development environment
+  <p>
+    The tutorial is divided into 5 parts:
+  </p>
+  <div class="list-group">
+    <a href="#environment" class="list-group-item">
+      1. Development Environment
+    </a>
+    <a href="#setup" class="list-group-item">
+      2. Project Setup
+    </a>
+    <a href="#back-end" class="list-group-item">
+      3. Back-end Development
+    </a>
+    <a href="#front-end" class="list-group-item">
+      4. Front-end Development
+    </a>
+    <a href="#build" class="list-group-item">
+      5. Building the Project
+    </a>
+  </div>
+  <br/>
+  <h3 id="environment">
+    1. Development Environment
   </h3>
   <p>
     So let’s get started. There are few prerequisites that you need to have to follow this tutorial. First off you need
@@ -332,7 +359,7 @@
     </kbd>
   <p>
 
-  <h3>Project Setup</h3>
+  <h3 id="setup">2. Project Setup</h3>
   <p>
     While the same workflow can be applied to any single page app framework we are going to use <a
       href="https://reactjs.org/">React</a>. To get a head start
@@ -347,13 +374,35 @@
   </p>
 
   <p>
-
-    Running the script created us a new project directory called <strong>led-blink</strong> <a
+    Patiently wait while the script downloads half of the internet. Running the command created us a new project
+    directory called <strong>led-blink</strong> <a
       href="https://github.com/lasselukkari/led-blink/commit/5ed54f672cb539a2e5aa87f1068d53b6c619e3d9"><i
-      class="fab fa-github"></i></a>. Open the project in your
-    favourite code
-    editor.
+      class="fab fa-github"></i></a>. Open the project in your favourite code editor.
   </p>
+  <p>
+    Our initial project structure looks like this.
+  </p>
+  <div class="card bg-light">
+  <pre>
+
+  led-blink
+    ├── README.md
+    ├── node_modules
+    ├── package.json
+    ├── .gitignore
+    ├── public
+    │   ├── favicon.ico
+    │   ├── index.html
+    │   └── manifest.json
+    └── src
+        ├── App.css
+        ├── App.js
+        ├── App.test.js
+        ├── index.css
+        ├── index.js
+        ├── logo.svg
+        └── serviceWorker.js</pre>
+  </div>
   <p>
     While the <a href="https://github.com/facebook/create-react-app">create-react-app</a> took care of our front-end
     boilerplate we still have nothing for the back-end that will be
@@ -389,9 +438,28 @@
     official IDE you will want to toggle on the <strong>Use external editor</strong> setting in the Arduino IDE
     preferences.
   </p>
-  <h3>Back-end</h3>
   <p>
-    The HTTP API is going to be simple. We need to implement two http handler functions. One for reading the current
+    Now the project structure looks like this.
+  </p>
+  <div class="card bg-light">
+    <pre>
+
+  led-blink
+    ├── README.md
+    ├── node_modules
+    ├── package.json
+    ├── .gitignore
+    ├── BlinkServer
+    │   ├── BlinkServer.ino
+    │   ├── StaticFiles.ino
+    │   ├── aWOT.cpp
+    │   └── aWOT.h
+    ├── public
+    └── src</pre>
+  </div>
+  <h3 id="back-end">3. Back-end Development</h3>
+  <p>
+    The http api is going to be simple. We need to implement two http handler functions. One for reading the current
     state of the led and
     one for updating it. For simplicity's sake we are going to use just the characters ‘0’ and ‘1’ to describe the
     state. Also fill in the wifi credentials.
@@ -870,20 +938,10 @@
     </kbd>
   </p>
 
-  <h3>Front-end</h3>
+  <h3 id="front-end">4. Front-end Development</h3>
   <p>
-    Now that the back-end is done we are ready to start working with the user interface. Because every cool javascript
-    project uses a lot of libraries to do the most simple things we are going to add a react toggle button component as
-    a project dependency.<br/>
-    <kbd>
-      npm install react-toggle-button --save
-    </kbd>
-
-    &nbsp<a href="https://github.com/lasselukkari/led-blink/commit/329f51aa250c58a5b8bcd09a0d7a1d5808d89e66"><i
-      class="fab fa-github"></i></a>
-  </p>
-  <p>
-    Uploading the user interface files to the microcontroller board every time we make changes would be way too slow
+    Now that the back-end is done we are ready to start working with the user interface. Uploading the user interface
+    files to the microcontroller board every time we make changes would be way too slow
     development sycle. Luckily we can proxy all api requests to the ESP32 while we do local development. To forward the
     api requests to the microcontroller we need to configure the proxy setting in our package.json
 
@@ -1024,6 +1082,17 @@
       </div>
     </div>
   </div>
+  <p>
+    Because every cool javascript
+    project uses a lot of libraries to do the most simple things we are going to add a react toggle button component as
+    a project dependency.<br/>
+    <kbd>
+      npm install react-toggle-button --save
+    </kbd>
+
+    &nbsp<a href="https://github.com/lasselukkari/led-blink/commit/329f51aa250c58a5b8bcd09a0d7a1d5808d89e66"><i
+      class="fab fa-github"></i></a>
+  </p>
   <p>
     Spin up the development server unless it’s not open already:<br/>
     <kbd>
@@ -1688,10 +1757,10 @@
   <p>
     Now toggling the button should also blink the led on the microcontroller.
   </p>
-  <h3>Building the project</h3>
+  <h3 id="build">5. Building the Project</h3>
   <p>
-    We are now ready to upload the app to the microcontroller but first we need to build a minified version of it. To do
-    this run:</br>
+    We are now alsmot ready to upload the app to the microcontroller but first we need to build a minified version of
+    it. To do this run:</br>
     <kbd>
       npm run build
     </kbd>
@@ -1736,7 +1805,7 @@
       </ol>
     </div>
     <div class="d2h-wrapper">
-      <div id="d2h-519664" class="d2h-file-wrapper" data-lang="json">
+      <div id="d2h-519663" class="d2h-file-wrapper" data-lang="json">
         <div class="d2h-file-header">
     <span class="d2h-file-name-wrapper">
     <svg aria-hidden="true" class="d2h-icon" height="16" version="1.1" viewBox="0 0 12 16" width="12">

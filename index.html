@@ -356,14 +356,14 @@
       chip</a></li>
   </ul>
   <p>
-    Make sure your node.js is never than 8.10.0:<br/>
+    Make sure your node.js is newer than 8.10.0:<br/>
     <kbd>
       node -v
     </kbd>
   </p>
 
   <p>
-    And that your npm is never than 5.2:<br/>
+    And that your npm is newer than 5.2:<br/>
     <kbd>
       npm -v
     </kbd>
@@ -447,11 +447,11 @@
   <p>
     The command created us a ready made Arduino webserver project under the directory <strong>BlinkServer</strong>.
     Open the project in the Arduino IDE. If you are planning to edit the Arduino code in your own editor instead of the
-    official IDE you will want to toggle on the <strong>Use external editor</strong> setting in the Arduino IDE
+    official IDE, you will want to toggle on the <strong>Use external editor</strong> setting in the Arduino IDE
     preferences. Otherwise files that are open in the editor will not get updated if they are edited elsewhere.
   </p>
   <p>
-    Now the project structure looks like this.
+    Now the project structure looks like this:
   </p>
   <div class="card bg-light">
     <pre>
@@ -471,7 +471,7 @@
   </div>
   <h3 id="back-end">3. Back-end Development</h3>
   <p>
-    The http api is going to be simple. We need to implement two http handler functions. One for reading the current
+    The HTTP API is going to be simple. We need to implement two HTTP handler functions. One for reading the current
     state of the led and
     one for updating it. For simplicity's sake we are going to use just the characters ‘0’ and ‘1’ to describe the
     state. Also fill in the wifi credentials.
@@ -1037,14 +1037,14 @@
   </div>
 
   <p>
-    Next hook up your development board and verify that you have the the correct target board and serial port selected
+    Next, hook up your development board, and verify that you have the the correct target board and serial port selected
     and upload the sketch to your microcontroller. When the microcontroller boots up and gets a connection it will print
-    the local ip address. Copy it somewhere as we are going to need it later on.
+    the local IP address. Copy it somewhere as we are going to need it later on.
   </p>
   <img src="images/serialconsole.png" class="img-fluid"/>
   <p>
     Mine
-    got the ip address <strong>192.168.1.227</strong>.
+    got the IP address <strong>192.168.1.227</strong>.
   </p>
   <p>
     Before moving on let's make sure our back-end works as expected.
@@ -1065,10 +1065,10 @@
 
   <h3 id="front-end">4. Front-end Development</h3>
   <p>
-    Now that the back-end is done we are ready to start working with the user interface. Uploading the user interface
-    files to the microcontroller board every time we make changes would be way too slow
-    development sycle. Luckily we can proxy all api requests to the ESP32 while we do local development. To forward the
-    api requests to the microcontroller we need to configure the proxy setting in our package.json
+    Now that the back-end is done, we are ready to start working with the user interface. Uploading the user interface
+    files to the microcontroller board every time we make changes would be way too slow a
+    development cycle. Luckily we can proxy all API requests to the ESP32 while we do local development. To forward the
+    API requests to the microcontroller we need to configure the proxy setting in our package.json
 
     <a href="https://github.com/lasselukkari/led-blink/commit/b0fdc66d429f3c18ba814e609977ab8b72dead21"><i
         class="fab fa-github"></i></a>
@@ -1884,7 +1884,7 @@
   </p>
   <h3 id="build">5. Building the Project</h3>
   <p>
-    We are now almost ready to upload the app to the microcontroller but first we need to build a minified version of
+    We are now almost ready to upload the app to the microcontroller, but first we need to build a minified version of
     it. To do this run:</br>
     <kbd>
       npm run build
@@ -1901,7 +1901,7 @@
   </p>
   <p>
     To convert the files in the <strong>build</strong> directory to a Arduino compatible format we need first add some
-    configs to the <strong>package.json</strong>.
+    configurations to the <strong>package.json</strong>.
     <a href="https://github.com/lasselukkari/led-blink/commit/fdd63303a7acc355881a0ba13fac6abca975c9da"><i
         class="fab fa-github"></i></a>
   </p>
@@ -2257,7 +2257,7 @@
   </p>
   <p>
     This command took the contents of <strong>build</strong> directory and embedded the data to the <strong>StaticFiles.ino</strong>
-    under the<strong> BlinkServer</strong> directory. To save some space the files were at the same time compressed with
+    under the <strong>BlinkServer</strong> directory. To save some space the files were at the same time compressed with
     gzip. The script also generated the proper http headers for encoding, cache control, response length and content
     type. In real life you would most likely want to exclude this file from your version control system. <a
       href="https://github.com/lasselukkari/led-blink/commit/c7f2330f8d0eeea4d2415bba7a91027d559ad77d"><i
@@ -2499,8 +2499,8 @@
     </div>
   </div>
   <p>
-    You can now upload your sketch. Point your browser to the device ip that is displayed when it boots up.
-    With any luck in a few hundred milliseconds you should see the same page as before, but now completely hosted on the
+    You can now upload your sketch. Point your browser to the device IP that is displayed when it boots up.
+    With any luck, in a few hundred milliseconds you should see the same page as before, but now completely hosted on the
     microcontroller.
   </p>
   <img src="images/ready.png" class="img-fluid"/>

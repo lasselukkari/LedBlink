@@ -1,24 +1,38 @@
 import React, { Component } from 'react';
+import ToggleButton from 'react-toggle-button';
 import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { ledOn: false };
+  }
+
+  setLedState(state) {
+    this.setState({ ledOn: state !== '0' })
+  }
+
+  componentDidMount() {
+    fetch('/led')
+      .then(response => response.text())
+      .then(state => this.setLedState(state));
+  }
+
+  handleStateChange(ledOn) {
+    fetch('/led', { method: 'PUT', body: ledOn ? '0' : '1' })
+      .then(response => response.text())
+      .then(state => this.setLedState(state));
+  }
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <ToggleButton
+            value={this.state.ledOn}
+            onToggle={value => this.handleStateChange(value)}
+          />
         </header>
       </div>
     );

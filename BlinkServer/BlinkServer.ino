@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include "aWOT.h"
+#include "StaticFiles.h"
 #define LED_BUILTIN 2
 
 #define WIFI_SSID "network"

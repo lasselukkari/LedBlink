@@ -1,72 +1,99 @@
 # Arduino Full Stack Tutorial
 
-https://awot.net/en/guide/tutorial.html
+Control an ESP32 LED from a React interface built with Vite and TypeScript.
+The board runs aWOT 4 and serves both the HTTP API and the compressed frontend.
+During development, Vite serves the interface on your computer and proxies
+requests to the board.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The [full-stack tutorial](https://awot.net/en/guide/tutorial.html) walks through
+the project. This repository contains the complete application.
 
-## Available Scripts
+## Requirements
 
-In the project directory, you can run:
+- Node.js 22.12 or newer and npm.
+- Arduino IDE with the [ESP32 board package](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html).
+- An ESP32 board with a regular GPIO LED, a USB cable, and a shared Wi-Fi network
+  for the board and your computer.
+- aWOT **4.0.0**. Open Library Manager in the Arduino IDE, search for `aWOT`,
+  select version **4.0.0**, and choose **Install**.
 
-### `npm start`
+## Build and upload
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+From the project directory, install the locked dependencies and generate the
+frontend assets:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+```sh
+npm ci
+npm run build:firmware
+```
 
-### `npm test`
+This checks TypeScript, builds the frontend into `dist/`, and generates
+`BlinkServer/StaticFiles.h`. Generate this header before compiling the sketch;
+it is excluded from version control and is rebuilt from the frontend sources.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Open `BlinkServer/BlinkServer.ino` in Arduino IDE. Set `WIFI_SSID` and
+`WIFI_PASSWORD`, then set `LED_PIN` and `LED_ACTIVE_LOW` for your board. The
+defaults are GPIO 2 and an active-high LED. Boards with addressable RGB LEDs
+need their own LED driver.
 
-### `npm run build`
+Select your board and serial port, then compile and upload. Open Serial Monitor
+at **115200 baud** and open the printed address in your browser, for example
+`http://192.168.1.227/`. The ESP32 now serves the interface and API.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The generated asset router is mounted once after the LED routes. The firmware
+uses `App` and explicitly closes each client after processing its request.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Develop the frontend
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Keep the flashed board running. Set the `/led` proxy target in `vite.config.ts`
+to the IP address printed in Serial Monitor, then run:
 
-### `npm run eject`
+```sh
+npm run dev
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Open the local URL printed by Vite, usually `http://localhost:5173`. Frontend
+edits update in the browser without uploading the firmware. Relative requests
+to `/led` are forwarded to the board during development and go directly to it
+when the built interface is served by the ESP32. Restart Vite after changing
+the proxy configuration.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The interface reads the initial LED state, disables the button during an update,
+and displays the state confirmed by the board. Connection failures and invalid
+responses appear on the page; check the board and reload to retry.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## API
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+| Request | Result |
+| --- | --- |
+| `GET /led` | Return `0` for off or `1` for on. |
+| `PUT /led` with exactly one byte, `0` or `1` | Set the LED and return its new state. |
+| `PUT /led` with any other body | Return HTTP 400 and keep the current LED state. |
 
-## Learn More
+Replace the address below with your board's address:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```sh
+curl --fail http://192.168.1.227/led
+curl --fail -X PUT -H 'Content-Type: text/plain' --data-binary '1' http://192.168.1.227/led
+curl --fail -X PUT -H 'Content-Type: text/plain' --data-binary '0' http://192.168.1.227/led
+curl -i -X PUT --data-binary 'invalid' http://192.168.1.227/led
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Scripts
 
-### Code Splitting
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start Vite with the board's API proxy. |
+| `npm run build` | Check TypeScript and produce the frontend in `dist/`. |
+| `npm run build:firmware` | Build the frontend and generate `BlinkServer/StaticFiles.h`. |
+| `npm run preview` | Serve the production frontend locally for inspection. |
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+The asset converter is the published `awot-static` command from
+`awot-scripts@3.1.2`, verified with aWOT 4. Its configuration in `package.json`
+uses `dist/` as the source and `BlinkServer/` as the sketch directory. Generated
+handlers serve gzip-compressed files with their content type and length.
 
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+After changing the frontend, run `npm run build:firmware` and upload the sketch
+again. After changing only firmware code, compile and upload. Check the Arduino
+compiler's size report against your board's application partition; the embedded
+web assets consume program flash alongside the sketch and library.

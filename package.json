@@ -1,40 +1,36 @@
 {
   "name": "led-blink",
-  "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
-    "react-scripts": "2.1.8",
-    "react-toggle-button": "^2.2.0"
-  },
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "dist": "awot-static"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:firmware": "npm run build && awot-static",
+    "preview": "vite preview"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "dependencies": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
-    "awot-scripts": "0.0.28"
+    "@types/node": "24.19.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "awot-scripts": "3.1.2",
+    "typescript": "6.0.3",
+    "vite": "8.3.3"
   },
-  "proxy": "http://arduino.ip",
   "awot-static": {
-    "sources": "./build",
+    "sources": "./dist",
     "indexFile": "index.html",
     "sketchDir": "./BlinkServer",
     "exclude": [
-      "*.map",
-      "service-worker.js"
+      "*.map"
     ]
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

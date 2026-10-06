@@ -14,16 +14,8 @@ the project. This repository contains the complete application.
 - Arduino IDE with the [ESP32 board package](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html).
 - An ESP32 board with a regular GPIO LED, a USB cable, and a shared Wi-Fi network
   for the board and your computer.
-- aWOT **4.0.0**, installed as an Arduino library. If Library Manager offers
-  this version, install it there. To install the development version, open the
-  `libraries` directory in your Arduino sketchbook and run:
-
-  ```sh
-  git clone --branch 4 https://github.com/lasselukkari/aWOT.git aWOT
-  ```
-
-Find the sketchbook location in the Arduino IDE preferences. Keep the complete
-library directory, including `src/`, and restart the IDE after installation.
+- aWOT **4.0.0**. Open Library Manager in the Arduino IDE, search for `aWOT`,
+  select version **4.0.0**, and choose **Install**.
 
 ## Build and upload
 

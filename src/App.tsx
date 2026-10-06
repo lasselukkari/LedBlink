@@ -21,16 +21,19 @@ export default function App() {
 
   useEffect(() => {
     const controller = new AbortController()
-    requestLed({ signal: controller.signal })
-      .then((state) => {
+
+    async function loadLed() {
+      try {
+        const state = await requestLed({ signal: controller.signal })
         if (!controller.signal.aborted) setLedOn(state)
-      })
-      .catch((cause: unknown) => {
+      } catch (cause: unknown) {
         if (!controller.signal.aborted) {
           setError(cause instanceof Error ? cause.message : 'Cannot reach the board')
         }
-      })
+      }
+    }
 
+    void loadLed()
     return () => controller.abort()
   }, [])
 

@@ -20,21 +20,23 @@ export default function App() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const controller = new AbortController()
+    let ignore = false
 
     async function loadLed() {
       try {
-        const state = await requestLed({ signal: controller.signal })
-        if (!controller.signal.aborted) setLedOn(state)
+        const state = await requestLed()
+        if (!ignore) setLedOn(state)
       } catch (cause: unknown) {
-        if (!controller.signal.aborted) {
+        if (!ignore) {
           setError(cause instanceof Error ? cause.message : 'Cannot reach the board')
         }
       }
     }
 
     void loadLed()
-    return () => controller.abort()
+    return () => {
+      ignore = true
+    }
   }, [])
 
   async function toggleLed() {

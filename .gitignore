@@ -1,6 +1,6 @@
 # Dependencies and generated frontend files
-/node_modules/
-/dist/
+/BlinkUI/node_modules/
+/BlinkUI/dist/
 
 # Generated firmware assets and Arduino build output
 /BlinkServer/StaticFiles.h

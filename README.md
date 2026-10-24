@@ -8,6 +8,30 @@ requests to the board.
 The [full-stack tutorial](https://awot.net/en/guide/tutorial.html) walks through
 the project. This repository contains the complete application.
 
+## Project layout
+
+```text
+LedBlink/
+├── README.md
+├── .gitignore
+├── BlinkUI/
+│   ├── src/
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── tsconfig.app.json
+│   └── tsconfig.node.json
+└── BlinkServer/
+    ├── BlinkServer.ino
+    └── StaticFiles.h       (generated when building for the board)
+```
+
+`BlinkUI` contains the React application and its npm tools. `BlinkServer`
+contains the Arduino sketch. Run all npm commands from `BlinkUI`; paths in
+this README are relative to the repository root unless stated otherwise.
+
 ## Requirements
 
 - Node.js 22.12 or newer and npm.
@@ -19,17 +43,20 @@ the project. This repository contains the complete application.
 
 ## Build and upload
 
-From the project directory, install the locked dependencies and generate the
-frontend assets:
+From the repository root, enter `BlinkUI`, install the locked dependencies,
+and generate the frontend assets:
 
 ```sh
+cd BlinkUI
 npm ci
 npm run build:firmware
 ```
 
-This checks TypeScript, builds the frontend into `dist/`, and generates
+This checks TypeScript, builds the frontend into `BlinkUI/dist/`, and generates
 `BlinkServer/StaticFiles.h`. Generate this header before compiling the sketch;
 it is excluded from version control and is rebuilt from the frontend sources.
+Check that the converter completes successfully and the header contains the
+current build before uploading.
 
 Open `BlinkServer/BlinkServer.ino` in Arduino IDE. Set `WIFI_SSID` and
 `WIFI_PASSWORD`, then set `LED_PIN` and `LED_ACTIVE_LOW` for your board. The
@@ -45,8 +72,9 @@ uses `App` and explicitly closes each client after processing its request.
 
 ## Develop the frontend
 
-Keep the flashed board running. Set the `/led` proxy target in `vite.config.ts`
-to the IP address printed in Serial Monitor, then run:
+Keep the flashed board running. Set the `/led` proxy target in
+`BlinkUI/vite.config.ts` to the IP address printed in Serial Monitor, then run
+the following from `BlinkUI`:
 
 ```sh
 npm run dev
@@ -81,19 +109,25 @@ curl -i -X PUT --data-binary 'invalid' http://192.168.1.227/led
 
 ## Scripts
 
+Run these commands from `BlinkUI`:
+
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start Vite with the board's API proxy. |
-| `npm run build` | Check TypeScript and produce the frontend in `dist/`. |
+| `npm run build` | Check TypeScript and produce the frontend in `BlinkUI/dist/`. |
 | `npm run build:firmware` | Build the frontend and generate `BlinkServer/StaticFiles.h`. |
 | `npm run preview` | Serve the production frontend locally for inspection. |
 
 The asset converter is the published `awot-static` command from
-`awot-scripts@3.1.2`, verified with aWOT 4. Its configuration in `package.json`
-uses `dist/` as the source and `BlinkServer/` as the sketch directory. Generated
-handlers serve gzip-compressed files with their content type and length.
+`awot-scripts@3.1.2`, verified with aWOT 4. Its configuration in
+`BlinkUI/package.json` uses `"sources": "./dist"` and
+`"sketchDir": "../BlinkServer"`, both relative to `BlinkUI`. The build turns
+the frontend files into `BlinkServer/StaticFiles.h`, which the sketch includes
+when compiling the firmware. Generated handlers serve gzip-compressed files
+with their content type and length.
 
-After changing the frontend, run `npm run build:firmware` and upload the sketch
-again. After changing only firmware code, compile and upload. Check the Arduino
-compiler's size report against your board's application partition; the embedded
-web assets consume program flash alongside the sketch and library.
+After changing the frontend, run `npm run build:firmware` from `BlinkUI` and
+upload the sketch again. After changing only firmware code, compile and upload.
+Check the Arduino compiler's size report against your board's application
+partition; the embedded web assets consume program flash alongside the sketch
+and library.

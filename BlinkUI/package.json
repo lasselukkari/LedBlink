@@ -25,7 +25,7 @@
   "awot-static": {
     "sources": "./dist",
     "indexFile": "index.html",
-    "sketchDir": "./BlinkServer",
+    "sketchDir": "../BlinkServer",
     "exclude": [
       "*.map"
     ]

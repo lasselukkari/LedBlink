@@ -1,0 +1,24 @@
+main {
+  max-width: 30rem;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: 0.5rem;
+  color: white;
+  background: #007d85;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+[role='alert'] {
+  color: #a12323;
+}

@@ -9,7 +9,7 @@ const int LED_PIN = 2;
 const bool LED_ACTIVE_LOW = false;
 
 WiFiServer server(80);
-App app;
+HttpServer http;
 bool ledOn = false;
 
 void writeLed() {
@@ -54,16 +54,16 @@ void setup() {
   Serial.print("Open http://");
   Serial.println(WiFi.localIP());
 
-  app.get("/led", readLed);
-  app.put("/led", updateLed);
-  app.use(staticFiles());
+  http.get("/led", readLed);
+  http.put("/led", updateLed);
+  http.use(staticFiles());
   server.begin();
 }
 
 void loop() {
   WiFiClient client = server.available();
   if (client.connected()) {
-    app.process(&client);
+    http.process(&client);
     client.stop();
   }
 }

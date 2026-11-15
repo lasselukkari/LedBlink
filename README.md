@@ -38,8 +38,8 @@ this README are relative to the repository root unless stated otherwise.
 - Arduino IDE with the [ESP32 board package](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html).
 - An ESP32 board with a regular GPIO LED, a USB cable, and a shared Wi-Fi network
   for the board and your computer.
-- aWOT **4.0.0**. Open Library Manager in the Arduino IDE, search for `aWOT`,
-  select version **4.0.0**, and choose **Install**.
+- aWOT **4.0.1**. Open Library Manager in the Arduino IDE, search for `aWOT`,
+  select version **4.0.1**, and choose **Install**.
 
 ## Build and upload
 
@@ -68,7 +68,7 @@ at **115200 baud** and open the printed address in your browser, for example
 `http://192.168.1.227/`. The ESP32 now serves the interface and API.
 
 The generated asset router is mounted once after the LED routes. The firmware
-uses `App` and explicitly closes each client after processing its request.
+uses `HttpServer` and explicitly closes each client after processing its request.
 
 ## Develop the frontend
 
